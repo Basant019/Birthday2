@@ -20,7 +20,7 @@ export default function MusicToggle({ musicOn, setMusicOn }) {
 
   return (
     <div className="fixed top-4 right-4 z-50" style={{ top: 'calc(env(safe-area-inset-top, 0px) + 16px)' }}>
-      <audio ref={audioRef} src="/music/theme.mp3" loop />
+      <audio ref={audioRef} src="music/theme.mp3" loop />
       <button
         onClick={toggle}
         className="glass rounded-full w-11 h-11 flex items-center justify-center text-lg"

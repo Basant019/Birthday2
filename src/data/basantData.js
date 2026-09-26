@@ -23,10 +23,10 @@ export const BASANT = {
 // tannu1: outdoor traditional, tannu2: night event, tannu3: yellow saree,
 // tannu4: pink saree candid, tannu5: school trip.
 export const PHOTOS = {
-  normal: ['/photos/tannu1.jpg', '/photos/tannu5.jpg'],
-  funny: ['/photos/tannu2.jpg', '/photos/tannu4.jpg'],
-  cute: ['/photos/tannu3.jpg', '/photos/tannu1.jpg', '/photos/tannu4.jpg'],
-  best: '/photos/tannu3.jpg',
+  normal: ['photos/tannu1.jpg', 'photos/tannu5.jpg'],
+  funny: ['photos/tannu2.jpg', 'photos/tannu4.jpg'],
+  cute: ['photos/tannu3.jpg', 'photos/tannu1.jpg', 'photos/tannu4.jpg'],
+  best: 'photos/tannu3.jpg',
 }
 
 export function randomFrom(arr) {
