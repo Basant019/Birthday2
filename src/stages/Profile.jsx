@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { GlassCard, PrimaryButton, GhostButton, StageHeading, StageSub } from '../components/UI'
+import TannuProfileCard from '../components/TannuProfileCard'
 
 const FIELDS = [
   { key: 'loves', label: 'One thing you love', required: true },
@@ -15,19 +16,19 @@ const FIELDS = [
 const FLIRTY = [
   { key: 'firstImpression', label: 'What was your first impression of Basant?' },
   { key: 'describeBasant', label: 'Describe Basant in 3 words.' },
-  { key: 'surprisinglyGood', label: "One thing you think Basant is surprisingly good at?" },
+  { key: 'surprisinglyGood', label: 'One thing you think Basant is surprisingly good at?' },
 ]
 
 export default function Profile({ state, update, onNext }) {
-  const [step, setStep] = useState('intro') // intro -> fields -> flirty -> reaction -> done
+  const [step, setStep] = useState('intro') // intro -> fields -> flirty -> reaction -> export
   const [values, setValues] = useState(state.profile)
   const [reactionChoice, setReactionChoice] = useState(null)
 
   const setField = (key, val) => setValues((v) => ({ ...v, [key]: val }))
 
-  const saveAndNext = () => {
+  const goToExport = () => {
     update({ profile: { ...values } })
-    onNext()
+    setStep('export')
   }
 
   if (step === 'intro') {
@@ -55,7 +56,7 @@ export default function Profile({ state, update, onNext }) {
               <input
                 value={values[f.key] || ''}
                 onChange={(e) => setField(f.key, e.target.value)}
-                className="w-full rounded-xl bg-white/10 border border-white/15 px-3 py-2 outline-none focus:border-glow-purple/60 text-warmwhite placeholder:text-warmwhite/30"
+                className="w-full rounded-xl bg-white/10 border border-white/15 px-3 py-2 outline-none focus:border-glow-purple/60 text-warmwhite placeholder:text-warmwhite/30 text-sm"
                 placeholder="Type here..."
               />
             </div>
@@ -83,7 +84,7 @@ export default function Profile({ state, update, onNext }) {
               <input
                 value={values[f.key] || ''}
                 onChange={(e) => setField(f.key, e.target.value)}
-                className="w-full rounded-xl bg-white/10 border border-white/15 px-3 py-2 outline-none focus:border-glow-purple/60 text-warmwhite placeholder:text-warmwhite/30"
+                className="w-full rounded-xl bg-white/10 border border-white/15 px-3 py-2 outline-none focus:border-glow-purple/60 text-warmwhite placeholder:text-warmwhite/30 text-sm"
                 placeholder="Type here (optional)..."
               />
             </div>
@@ -94,34 +95,58 @@ export default function Profile({ state, update, onNext }) {
     )
   }
 
-  // reaction stage: If Basant randomly says "Chal, adventure pe chalte hain..."
-  return (
-    <div className="stage-wrap">
-      <StageHeading className="text-2xl">One more thing...</StageHeading>
-      <StageSub>If Basant randomly says "Chal, adventure pe chalte hain"...</StageSub>
-      <GlassCard>
-        <div className="grid grid-cols-1 gap-3">
-          {["I'm in 😎", 'Where are we going? 😂', 'Let me think 👀', 'Absolutely not 😭'].map((opt) => (
-            <button
-              key={opt}
-              onClick={() => {
-                setReactionChoice(opt)
-                setField('adventureReaction', opt)
-              }}
-              className={`glass rounded-2xl px-4 py-3 text-center transition active:scale-95 ${
-                reactionChoice === opt ? 'border border-glow-pink/60 bg-glow-pink/10' : 'hover:bg-white/10'
-              }`}
-            >
-              {opt}
-            </button>
-          ))}
-        </div>
-        {reactionChoice && (
-          <div className="mt-5 text-center">
-            <PrimaryButton onClick={saveAndNext}>Continue</PrimaryButton>
+  if (step === 'reaction') {
+    return (
+      <div className="stage-wrap">
+        <StageHeading className="text-2xl">One more thing...</StageHeading>
+        <StageSub>If Basant randomly says "Chal, adventure pe chalte hain"...</StageSub>
+        <GlassCard>
+          <div className="grid grid-cols-1 gap-3">
+            {["I'm in 😎", 'Where are we going? 😂', 'Let me think 👀', 'Absolutely not 😭'].map((opt) => (
+              <button
+                key={opt}
+                onClick={() => {
+                  setReactionChoice(opt)
+                  setField('adventureReaction', opt)
+                }}
+                className={`glass rounded-2xl px-4 py-3 text-center transition active:scale-95 text-sm font-medium ${
+                  reactionChoice === opt ? 'border border-glow-pink/60 bg-glow-pink/10' : 'hover:bg-white/10'
+                }`}
+              >
+                {opt}
+              </button>
+            ))}
           </div>
-        )}
-      </GlassCard>
+          {reactionChoice && (
+            <div className="mt-5 text-center">
+              <PrimaryButton onClick={goToExport}>Generate My Profile ✨</PrimaryButton>
+            </div>
+          )}
+        </GlassCard>
+      </div>
+    )
+  }
+
+  // Export stage: "Your Tannu Profile is Ready ✨"
+  const mergedState = { ...state, profile: values }
+  return (
+    <div className="stage-wrap py-8">
+      <StageHeading className="text-3xl mb-2">Your Tannu Profile is Ready ✨</StageHeading>
+
+      <div className="text-center max-w-md mb-6 space-y-1">
+        <p className="text-glow-pink font-semibold text-base sm:text-lg">
+          You just revealed a lot about yourself 👀
+        </p>
+        <p className="text-warmwhite/80 text-xs sm:text-sm">
+          Save this and send it to Basant — let's see if he remembers all of it 😂
+        </p>
+      </div>
+
+      <TannuProfileCard state={mergedState} className="mb-6" />
+
+      <PrimaryButton onClick={onNext} className="max-w-xs">
+        Continue Mission →
+      </PrimaryButton>
     </div>
   )
 }

@@ -36,6 +36,7 @@ export default function BirthdayReveal({ onNext }) {
           setLineIdx(0)
         } else if (phase === 'reveal') {
           setPhase('message')
+          window.dispatchEvent(new CustomEvent('birthday-reveal-started'))
           burstConfetti()
           setTimeout(burstConfetti, 500)
         }

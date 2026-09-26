@@ -2,14 +2,14 @@ import React, { useRef, useState } from 'react'
 import html2canvas from 'html2canvas'
 import { generateTitle, ACHIEVEMENT_POOL } from '../data/basantData'
 import { PrimaryButton, GhostButton, StageHeading, StageSub } from '../components/UI'
+import TannuProfileCard from '../components/TannuProfileCard'
 
 export default function FinalResultCard({ state, onNext }) {
   const cardRef = useRef(null)
-  const [tannuName] = useState('Tannu')
+  const [showProfileCard, setShowProfileCard] = useState(false)
   const [saving, setSaving] = useState(false)
   const [imgUrl, setImgUrl] = useState(null)
   const title = generateTitle(state)
-  const earnedCount = ACHIEVEMENT_POOL.filter((a) => a.condition(state)).length
 
   const words = state.profile.describeBasant || '—'
   const impression = state.profile.firstImpression || '—'
@@ -30,7 +30,7 @@ export default function FinalResultCard({ state, onNext }) {
             try {
               await navigator.share({ files: [file], title: "Tannu's Basant Test" })
             } catch {
-              // user cancelled share — fine, they still have the download link below
+              // user cancelled share — fine
             }
           }
         })
@@ -45,6 +45,22 @@ export default function FinalResultCard({ state, onNext }) {
     } finally {
       setSaving(false)
     }
+  }
+
+  if (showProfileCard) {
+    return (
+      <div className="stage-wrap py-8">
+        <StageHeading className="text-2xl">Your Tannu Profile ✨</StageHeading>
+        <StageSub>Your personal voluntary answers dossier</StageSub>
+        <TannuProfileCard state={state} className="mb-6" />
+        <GhostButton onClick={() => setShowProfileCard(false)} className="max-w-xs mb-3">
+          ← Back to Mission Results
+        </GhostButton>
+        <PrimaryButton onClick={onNext} className="max-w-xs">
+          Continue →
+        </PrimaryButton>
+      </div>
+    )
   }
 
   return (
@@ -75,6 +91,10 @@ export default function FinalResultCard({ state, onNext }) {
       <PrimaryButton onClick={saveImage} className="max-w-xs mb-3" disabled={saving}>
         📸 {saving ? 'Saving...' : 'Save My Results'}
       </PrimaryButton>
+
+      <GhostButton onClick={() => setShowProfileCard(true)} className="max-w-xs mb-3">
+        📄 View/Export Tannu Profile ✨
+      </GhostButton>
 
       {imgUrl && (
         <p className="text-center text-warmwhite/70 text-sm mb-3 max-w-xs">
